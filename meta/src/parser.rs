@@ -599,7 +599,7 @@ fn unescape(string: &str) -> Option<String> {
                         return None;
                     }
 
-                    for _ in 0..string.len() + 1 {
+                    for _ in 0..=string.len() {
                         chars.next()?;
                     }
 

@@ -16,7 +16,7 @@ pub fn unroll(rule: Rule) -> Rule {
         ty,
         expr: expr.map_bottom_up(|expr| match expr {
             Expr::RepOnce(expr) => Expr::Seq(expr.clone(), Box::new(Expr::Rep(expr))),
-            Expr::RepExact(expr, num) => (1..num + 1)
+            Expr::RepExact(expr, num) => (1..=num)
                 .map(|_| *expr.clone())
                 .rev()
                 .fold(None, |rep, expr| match rep {
@@ -38,7 +38,7 @@ pub fn unroll(rule: Rule) -> Rule {
                     Some(rep) => Some(Expr::Seq(Box::new(expr), Box::new(rep))),
                 })
                 .unwrap(),
-            Expr::RepMax(expr, max) => (1..max + 1)
+            Expr::RepMax(expr, max) => (1..=max)
                 .map(|_| Expr::Opt(expr.clone()))
                 .rev()
                 .fold(None, |rep, expr| match rep {
@@ -46,7 +46,7 @@ pub fn unroll(rule: Rule) -> Rule {
                     Some(rep) => Some(Expr::Seq(Box::new(expr), Box::new(rep))),
                 })
                 .unwrap(),
-            Expr::RepMinMax(expr, min, max) => (1..max + 1)
+            Expr::RepMinMax(expr, min, max) => (1..=max)
                 .map(|i| {
                     if i <= min {
                         *expr.clone()
